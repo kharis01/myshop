@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Shop</title>
+    <title>My Data</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container my-5">
-        <h2>List of Clients</h2>
-        <a class="btn btn-primary" href="/myshop/create.php" role="button">New Client</a>
+   
+        <h2 class="text-primary">Data Siswa</h2>
         <br>
         <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Created At</th>
-                    <th>Action</th>
+            <thead> 
+                <tr class="text-light">
+                    <th class="border border-dark bg-success">ID</th>
+                    <th class="border border-dark bg-success">Name</th>
+                    <th class="border border-dark bg-success">Email</th>
+                    <th class="border border-dark bg-success">Phone</th>
+                    <th class="border border-dark bg-success">Addres</th>
+                    <th class="border border-dark bg-success">Created At</th>
+                    <th class="border border-dark bg-success">Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-body">
                 <?php
                 $servername = "localhost:3307";
                 $username = "root";
@@ -36,10 +36,10 @@
 
                 // Check connection
                 if ($connection->connect_error) {
-                    die("Connection Failed: " . $connection->connect_error);
+                    die("Connection failed: " . $connection->connect_error);
                 }
 
-                // Read all row from database table
+                // read all row from database table 
                 $sql = "SELECT * FROM clients";
                 $result = $connection->query($sql);
 
@@ -48,7 +48,7 @@
                 }
 
                 // Read data of each row
-                while($row = $result->fetch_assoc()) {
+                while($row = $result->fetch_assoc()) { 
                     echo "
                     <tr>
                     <td>$row[id]</td>
@@ -70,6 +70,7 @@
                 
             </tbody>
         </table>
+        <a class="btn btn-warning col-md-1" href="/myshop/create.php" role="button">New Data</a>
     </div>
 </body>
 </html>

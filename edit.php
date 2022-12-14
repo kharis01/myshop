@@ -1,5 +1,4 @@
 <?php
-
 $servername = "localhost:3307";
 $username = "root";
 $password = "";
@@ -8,7 +7,7 @@ $database = "myshop";
 // Create connection
 $connection = new mysqli($servername, $username, $password, $database);
 
-
+$id = "";
 $name = "";
 $email = "";
 $phone = "";
@@ -17,42 +16,65 @@ $address = "";
 $errorMessage = "";
 $successMessage = "";
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ( $_SERVER['REQUEST_METHOD'] == 'GET' ) {
+    //GET method : Show the data of the client
+
+    if ( !isset($_GET["id"]) ) {
+        header("location: /myshop/index.php");
+        exit;
+    }
+
+    $id = $_GET["id"];
+
+    //read the row of the selected client from database table
+    $sql = "SELECT * FROM clients WHERE id=$id";
+    $result = $connection->query($sql);
+    $row = $result->fetch_assoc(); 
+
+    if (!$row) {
+        header("location: /myshop/index.php");
+        exit;
+    }
+
+    $name = $row["name"];
+    $email = $row["email"];
+    $phone = $row["phone"];
+    $address = $row["address"];
+}
+else {
+    // POST method :  Update the data of the client
+    $id = $_POST["id"];
     $name = $_POST["name"];
     $email = $_POST["email"];
     $phone = $_POST["phone"];
     $address = $_POST["address"];
 
     do {
-        if (empty($name) || empty($email) || empty($phone) || empty($address)) {
+        if (empty($id) || empty($name) || empty($email) || empty($phone) || empty($address)) {
             $errorMessage = "All the  field are required";
             break;
         }
 
-        // add new client  to database
-        $sql = "INSERT INTO clients (name, email, phone, address) " .
-               "VALUES ('$name', '$email', '$phone', '$address')";
-        $result = $connection->query($sql);
+        $sql = "UPDATE clients " .
+               "SET name = '$name', email = '$email', phone = '$phone', address = '$address' " .
+               "WHERE id = $id";
 
-        if (!$result) {
-            $errorMessage = "Invalid query: " . $connection->error;
-            break; 
-        }
+               $result = $connection->query($sql);
 
-        $name = "";
-        $email = "";
-        $phone = "";
-        $address = "";
+               if (!$result) {
+                $errorMessage = "Invalid query: " . $connection->error;
+                break; 
+            }
 
-        $successMessage = "Client added correctly";
+            $successMessage = "Client updated correctly";
 
-        header("location: /myshop/index.php");
-        exit;
+            header("location: /myshop/index.php");
+            exit;
 
-    } while (false);
+    } while (true);
 }
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
     <div class="container my-5">
-        <h2 class="text-primary">New Data</h2>
+        <h2 class="text-primary">Edit Data</h2>
         <br>
         <?php
         if (!empty($errorMessage)) {
@@ -81,28 +103,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ?>
 
         <form method="post">
+            <input type="hidden" name="id" value="<?php echo $id; ?>">
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Name</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="name" value="<?php echo $name; ?>">
+                    <input type="text" class="form-control" required name="name" value="<?php echo $name; ?>">
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="email" value="<?php echo $email; ?>">
+                    <input type="text" class="form-control" required name="email" value="<?php echo $email; ?>">
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Phone</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="phone" value="<?php echo $phone; ?>">
+                    <input type="text" class="form-control" required name="phone" value="<?php echo $phone; ?>">
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Address</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="address" value="<?php echo $address; ?>">
+                    <input type="text" class="form-control" required name="address" value="<?php echo $address; ?>">
                 </div>
             </div>
 
